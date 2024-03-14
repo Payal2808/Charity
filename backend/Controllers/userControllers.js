@@ -1,64 +1,127 @@
-const User = require('../Models/user');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const { SECRET_KEY } = require('../config/config');
+const User = require("../Models/user");
+const jwt = require("jsonwebtoken");
+const { SECRET_KEY } = require("../config/config");
 
-const UserController = {
-    register: async (req, res) => {
-        try {
-            const { username, email, password } = req.body;
+exports.registerUser = async (req, res) => {
+  try {
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword,
+      accountType,
+    } = req.body;
 
-            // Check if user with the same email already exists
-            const existingUser = await User.findOne({ email });
-            if (existingUser) {
-                return res.status(400).json({ message: 'User already exists with this email' });
-            }
-
-            // Hash the password
-            const hashedPassword = await bcrypt.hash(password, 10);
-
-            // Create a new user
-            const newUser = new User({
-                username,
-                email,
-                password: hashedPassword
-            });
-
-            // Save the user to the database
-            await newUser.save();
-
-            res.status(201).json({ message: 'User registered successfully' });
-        } catch (error) {
-            console.error('Error registering user:', error);
-            res.status(500).json({ message: 'Internal server error' });
-        }
-    },
-
-    login: async (req, res) => {
-        try {
-            const { email, password } = req.body;
-
-            // Find the user by email
-            const user = await User.findOne({ email });
-            if (!user) {
-                return res.status(404).json({ message: 'User not found' });
-            }
-
-            // Compare passwords
-            const isPasswordValid = await bcrypt.compare(password, user.password);
-            if (!isPasswordValid) {
-                return res.status(401).json({ message: 'Invalid credentials' });
-            }
-
-            // Generate JWT token
-            const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '1h' });
-
-            res.status(200).json({ token });
-        } catch (error) {
-            console.error('Error logging in:', error);
-            res.status(500).json({ message: 'Internal server error' });
-        }
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !password ||
+      !confirmPassword ||
+      !accountType
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: "All fields are required",
+      });
     }
+
+    // Does'nt match both password
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Password is not match",
+      });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "User is already registered",
+      });
+    }
+
+    const user = await User.create({
+      firstName,
+      lastName,
+      email,
+      password,
+      accountType: accountType,
+      avatar: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
+    });
+
+    const createdUser = await User.findById(user._id).select("-password");
+
+    // return res
+    return res.status(200).json({
+      success: true,
+      createdUser,
+      message: "User is registered successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error while register user",
+    });
+  }
 };
+
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({
+      email,
+    });
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid credentials",
+      });
+    }
+
+    const isPasswordValid = await user.isPasswordCorrect(password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid Password",
+      });
+    }
+
+    const { accessToken } = await generateAccessAndRefreshTokens(user._id);
+
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+
+    return res.status(200).cookie("accessToken", accessToken, options).json({
+      success: true,
+      message: "Login Successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while login",
+    });
+  }
+};
+
+exports.logout = async(req, res) => {
+    await User.findByIdAndUpdate(req.user._id, {new:true})
+    const options = {
+        httpOnly: true,
+        secure: true,
+      };
+
+      return res.status(200).clearCookie("accessToken", options).json({
+        success:true,
+        message:"logOut Successfully"
+      })
+}
 
 module.exports = UserController;
