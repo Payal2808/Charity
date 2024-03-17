@@ -6,6 +6,7 @@ import Gallery from "./Component/Gallery";
 import Contact from "./Component/Contact";
 import Login from "./Component/Auth/Login";
 import Signup from "./Component/Auth/Signup";
+import Dashboard from "./Pages/Dashboard";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/dashboard" element={<Dashboard />} />
 
       </Routes>
     </div>

@@ -11,12 +11,7 @@ database.connect();
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: "*",
-    credentials: true,
-  })
-);
+app.use(cors({ origin: "*", credentials: true }));
 
 // Import routes
 const userRoutes = require("./Routes/userRoutes");
