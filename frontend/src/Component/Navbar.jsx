@@ -5,7 +5,7 @@ const NavbarComponent = () => {
     <div className="flex justify-between p-4 bg-slate-300">
       <h1 className="text-lg font-bold">CharityYard</h1>
       <ul className="flex gap-4">
-        <Link to="/">Home</Link>
+        <Link to="/home">Home</Link>
         <Link to="/about">About</Link>
         <Link to="/gallery">Gallery</Link>
         <Link to="/contact">Contact Us</Link>

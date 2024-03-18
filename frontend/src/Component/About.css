@@ -1,0 +1,52 @@
+/* About.css */
+
+.about-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .about-image {
+    max-width: 50%;
+    margin-top: 20px; /* Add margin to create space between the image and content */
+  }
+  
+  .about-content {
+    max-width: 50%;
+    text-align: center;
+  }
+  
+  .about-content h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .about-content p {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+.mission h1{
+
+font-size: 19px;
+font-weight: 500;
+}  
+.mission p {
+text-align: left;
+font-size: 15px;
+
+}
+.vision h1{
+  font-size: 19px;
+font-weight: 500;
+}
+.vision p{
+    text-align: left;
+    font-size: 15px;
+     
+}
+.container{
+    
+}

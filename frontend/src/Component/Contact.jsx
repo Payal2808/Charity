@@ -22,7 +22,7 @@ const Contact = () => {
             htmlFor="first-name">
             First name
           </label>
-          <input
+          <input 
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded-lg py-3 px-4 leading-tight focus:outline-none focus:bg-white"
             id="first-name"
             type="text"
@@ -49,8 +49,8 @@ const Contact = () => {
         <div className="w-full px-3">
           <label
             className="block uppercase tracking-wide text-gray-700 text-xs font-medium mb-2"
-            htmlFor="budget">
-            Budget
+            htmlFor="email-id">
+            Email-ID
           </label>
           <input
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded-lg py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
@@ -60,7 +60,7 @@ const Contact = () => {
             onChange={(e) => setBudget(e.target.value)}
           />
           <p className="text-gray-600 text-xs italic">
-            Please provide your budget for this project.
+            please provide a valid mail-id
           </p>
         </div>
       </div>
@@ -68,8 +68,8 @@ const Contact = () => {
         <div className="w-full px-3">
           <label
             className="block uppercase tracking-wide text-gray-700 text-xs font-medium mb-2"
-            htmlFor="website">
-            Website
+            htmlFor="contact">
+           PHONE NUMBER
           </label>
           <input
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded-lg py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
@@ -78,6 +78,8 @@ const Contact = () => {
             value={website}
             onChange={(e) => setWebsite(e.target.value)}
           />
+          
+         
         </div>
       </div>
       <div className="flex flex-wrap -mx-3 mb-6">
