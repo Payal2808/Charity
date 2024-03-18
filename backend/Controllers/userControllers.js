@@ -2,6 +2,25 @@ const User = require("../Models/user");
 const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = require("../config/config");
 
+generateAccessAndRefreshTokens = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+
+    const accessToken = await user.generateAccessToken();
+    // const refreshToken = await user.generateRefreshToken();
+
+    // user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    return { accessToken };
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while generating tokens",
+    });
+  }
+};
+
 exports.registerUser = async (req, res) => {
   try {
     const {
@@ -42,13 +61,12 @@ exports.registerUser = async (req, res) => {
         message: "User is already registered",
       });
     }
-
     const user = await User.create({
       firstName,
       lastName,
       email,
       password,
-      accountType: accountType,
+      accountType,
       avatar: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
     });
 
@@ -71,10 +89,7 @@ exports.registerUser = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    const user = await User.findOne({
-      email,
-    });
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(401).json({
@@ -101,6 +116,8 @@ exports.login = async (req, res) => {
 
     return res.status(200).cookie("accessToken", accessToken, options).json({
       success: true,
+      user,
+      accessToken,
       message: "Login Successfully",
     });
   } catch (error) {
@@ -111,17 +128,15 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.logout = async(req, res) => {
-    await User.findByIdAndUpdate(req.user._id, {new:true})
-    const options = {
-        httpOnly: true,
-        secure: true,
-      };
+exports.logout = async (req, res) => {
+  await User.findByIdAndUpdate(req.user._id, { new: true });
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
 
-      return res.status(200).clearCookie("accessToken", options).json({
-        success:true,
-        message:"logOut Successfully"
-      })
-}
-
-module.exports = UserController;
+  return res.status(200).clearCookie("accessToken", options).json({
+    success: true,
+    message: "logOut Successfully",
+  });
+};

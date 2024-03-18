@@ -32,6 +32,6 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Donation = mongoose.model("Product", productSchema);
+const Product = mongoose.model("Product", productSchema);
 
-module.exports = productSchema;
+module.exports = Product;

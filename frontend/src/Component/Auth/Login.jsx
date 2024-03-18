@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import Input from "./Input";
+import { login } from "../../Services/Auth/AuthApi";
 
 function Login() {
   const navigate = useNavigate();
@@ -14,16 +15,16 @@ function Login() {
   const loginSubmit = async (e) => {
     try {
       console.log(e);
-      //   dispatch(login(e.email, e.password, navigate));
+      dispatch(login(e.email, e.password, navigate));
     } catch (error) {
       console.error(error);
     }
   };
   return (
-    <div>
+    <div className="flex items-center justify-center h-[90vh]">
       <form
         onSubmit={handleSubmit(loginSubmit)}
-        className="mt-6 flex w-full flex-col gap-y-4"
+        className="p-8 rounded-lg mt-6 flex w-[50vw] flex-col gap-y-4 border"
       >
         {/* Email Input Field */}
         <Input
