@@ -15,7 +15,4 @@ const Home = () => {
       </div>
       {/* Add homepage content here */}
     </div>
-  );
-};
-
 export default Home;
